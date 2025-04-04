@@ -1,9 +1,18 @@
 import { Sequelize } from "sequelize";
-import config from "./config.json";
+// import config from "./config.json";
+// import config from "./config.json" assert { type: "json" };
+import path from "path";
 
-const env = process.env.NODE_ENV || "development";
-const dbConfig = config[env];
+import fs from "fs";
+const rawConfig = fs.readFileSync(
+  path.resolve("./config/config.json"),
+  "utf-8"
+);
+const config = JSON.parse(rawConfig);
 
+// const env = process.env.NODE_ENV || "development";
+// const dbConfig = config[env];
+const dbConfig = config.development; // Use the development configuration directly
 const sequelize = new Sequelize(
   dbConfig.database,
   dbConfig.username,
