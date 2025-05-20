@@ -35,7 +35,8 @@ const Employee = sequelize.define(
       type: DataTypes.STRING,
     },
     salary: {
-      type: DataTypes.NUMBER,
+      // type: DataTypes.NUMBER,
+      type: DataTypes.DECIMAL(10, 2),
     },
     about: {
       type: DataTypes.STRING,
@@ -59,6 +60,8 @@ const Employee = sequelize.define(
   {
     tableName: "employees",
     timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
   }
 );
 

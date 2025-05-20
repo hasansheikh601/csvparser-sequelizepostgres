@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import csv from "fast-csv"; // Import fast-csv for CSV parsing
+import Employee from "../models/employee.js";
 const router = express.Router();
 
 router.get("/getcsv", async (req, res) => {
@@ -31,6 +32,39 @@ router.get("/getcsv", async (req, res) => {
     console.error("Error fetching employees:", error);
     res.status(500).json({ error: "Failed to fetch employees" });
   }
+});
+
+router.post("/createEmp", async (req, res) => {
+  console.log("Req ", req.body);
+
+  try {
+    const emp = await Employee.create(req.body);
+    console.log("Employee created:", emp);
+    res.status(201).json(emp);
+  } catch (error) {
+    console.log("Error creating employee:", error);
+  }
+});
+
+router.get("/heavy", (req, res) => {
+  const start = Date.now();
+
+  while (Date.now() - start < 5000) {
+    // Simulate heavy computation
+  }
+  res.json({
+    message: "load test",
+    pid: process.pid,
+    timeStamp: new Date().toISOString(),
+  });
+});
+
+router.get("/ping", (req, res) => {
+  res.json({
+    message: "pong",
+    pid: process.pid,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 export default router;

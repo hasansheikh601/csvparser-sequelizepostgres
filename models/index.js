@@ -113,12 +113,13 @@ import sequelize from "../config/database.js"; // Import Sequelize instance
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+console.log("__dirname path", __dirname);
 const db = {};
 
 const modelFiles = fs
   .readdirSync(__dirname)
   .filter((file) => file.endsWith(".js") && file !== path.basename(__filename));
+console.log("modelFiles", modelFiles);
 
 for (const file of modelFiles) {
   const { default: model } = await import(path.join(__dirname, file)); // Use dynamic import
