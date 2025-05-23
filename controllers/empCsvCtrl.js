@@ -1,9 +1,11 @@
 import express from "express";
 import path from "path";
-import fs from "fs";
+import fs, { createReadStream } from "fs";
 import { fileURLToPath } from "url";
-import csv from "fast-csv"; // Import fast-csv for CSV parsing
+import csv, { parse } from "fast-csv"; // Import fast-csv for CSV parsing
 import Employee from "../models/employee.js";
+import upload from "../middleware/upload.js";
+import sendEmail from "../utils/sendEmail.js";
 const router = express.Router();
 
 router.get("/getcsv", async (req, res) => {
@@ -34,6 +36,89 @@ router.get("/getcsv", async (req, res) => {
   }
 });
 
+router.post("/upload", upload.single("file"), async (req, res) => {
+  console.log("Req file", req.file);
+  try {
+    if (req.file == undefined) {
+      return res.status(400).send("Please upload a file");
+    }
+
+    let employees = [];
+    let path = "./assets/uploads/" + req.file.filename;
+    createReadStream(path)
+      .pipe(parse({ headers: true }))
+      .on("error", (error) => {
+        throw error.message;
+      })
+      .on("data", (row) => {
+        employees.push(row);
+      })
+      .on("end", () => {
+        Employee.bulkCreate(employees)
+          .then(() => {
+            res.status(200).send({
+              message:
+                "The file " +
+                req.file.originalname +
+                "has been uploaded successfully",
+            });
+          })
+          .catch((error) => {
+            res.status(500).send({
+              message: "Couldn't import data into database!",
+              error: error.message,
+            });
+          });
+      });
+  } catch (error) {
+    console.log("Error uploading file", error);
+    res.status.send({
+      message: "Failed to upload file: " + req.file.originalname,
+    });
+  }
+});
+
+// const upload = async (req, res) => {
+//   try {
+//     if (req.file == undefined) {
+//       return res.status(400).send("Please upload a file");
+//     }
+
+//     let employees = [];
+//     let path = "./assets/uploads/" + req.file.originalname;
+//     createReadStream(path)
+//       .pipe(parse({ headers: true }))
+//       .on("error", (error) => {
+//         throw error.message;
+//       })
+//       .on("data", (row) => {
+//         employees.push(row);
+//       })
+//       .on("end", () => {
+//         Employee.bulkCreate(employees)
+//           .then(() => {
+//             res.status(200).send({
+//               message:
+//                 "The file" +
+//                 req.file.originalname +
+//                 "has been uploaded successfully",
+//             });
+//           })
+//           .catch((error) => {
+//             res.status(500).send({
+//               message: "Couldn't import data into database!",
+//               error: error.message,
+//             });
+//           });
+//       });
+//   } catch (error) {
+//     console.log("Error uploading file", error);
+//     res.status.send({
+//       message: "Failed to upload file: " + req.file.originalname,
+//     });
+//   }
+// };
+
 router.post("/createEmp", async (req, res) => {
   console.log("Req ", req.body);
 
@@ -43,6 +128,31 @@ router.post("/createEmp", async (req, res) => {
     res.status(201).json(emp);
   } catch (error) {
     console.log("Error creating employee:", error);
+  }
+});
+
+router.post("/sendEmail", async (req, res) => {
+  const { email } = req.body;
+  const mails = [
+    "sheikh1@mailinator.com",
+    "atif1@mailinator.com",
+    "ismailawan@gmail.com",
+  ];
+  try {
+    //const data = req.body;
+    const testBody = `Hi. This Link is valid till 10 minutes
+    from now. <a href='https://koyal.pk'>Click Here</a>`;
+    const data = {
+      // to: email,
+      text: "This is a test email",
+      subject: "please ignore",
+      html: testBody,
+    };
+    await Promise.all(mails.map((email) => sendEmail({ ...data, to: email })));
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "Failed to send email" });
   }
 });
 

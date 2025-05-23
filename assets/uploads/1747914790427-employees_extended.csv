@@ -1,0 +1,5 @@
+name,email,username,dob,company,address,location,salary,about,role,managedBy
+John Doe,john.doe@example.com,johndoe,1990-01-15,TechCorp,"123 Main St, New York, NY",New York,70000.00,A senior developer.,Developer,
+Jane Smith,jane.smith@example.com,janesmith,1985-06-23,InnovateX,"456 Elm St, San Francisco, CA",San Francisco,85000.00,Product manager.,Manager,
+Bob Johnson,bob.johnson@example.com,bobbyj,1992-03-11,TechCorp,"789 Oak St, Seattle, WA",Seattle,60000.00,Junior developer reporting to John.,Developer,1
+Alice Nguyen,alice.nguyen@example.com,alice123,1994-08-19,TechCorp,"321 Pine St, Denver, CO",Denver,62000.00,Developer reporting to Jane.,Developer,2

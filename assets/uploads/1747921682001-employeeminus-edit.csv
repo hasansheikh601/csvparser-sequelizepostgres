@@ -1,0 +1,5 @@
+name,email,username,dob,company,address,location,salary,about,role
+John Doe,ismail@mailinator.com,ismail,15/01/1990,TechCorp,"123 Main St, New York, NY",New York,70000,A senior developer.,Developer
+Jane Smith,abdul.qadeer@mailinator.com,abdulqadeer,23/06/1985,InnovateX,"456 Elm St, San Francisco, CA",San Francisco,85000,Product manager.,Manager
+Bob Johnson,hasanfaysal12@mailinator.com,hasan,11/03/1992,TechCorp,"789 Oak St, Seattle, WA",Seattle,60000,Junior developer reporting to John.,Developer
+Alice Nguyen,ghulamhyder@mailinator.com,haider,19/08/1994,TechCorp,"321 Pine St, Denver, CO",Denver,62000,Developer reporting to Jane.,Developer
