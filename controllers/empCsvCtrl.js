@@ -6,6 +6,7 @@ import csv, { parse } from "fast-csv"; // Import fast-csv for CSV parsing
 import Employee from "../models/employee.js";
 import upload from "../middleware/upload.js";
 import sendEmail from "../utils/sendEmail.js";
+import { emailQueue } from "../bullmq/queue.js";
 const router = express.Router();
 
 router.get("/getcsv", async (req, res) => {
@@ -131,28 +132,67 @@ router.post("/createEmp", async (req, res) => {
   }
 });
 
+// router.post("/sendEmail", async (req, res) => {
+//   // const { email } = req.body;
+//   const mails = ["sheikh1@mailinator.com", "atif", "ismailawan@gmail.com"];
+//   try {
+//     //const data = req.body;
+//     const testBody = `Hi. This Link is valid till 10 minutes
+//     from now. <a href='https://koyal.pk'>Click Here</a>`;
+//     const data = {
+//       // to: email,
+//       text: "This is a test email",
+//       subject: "please ignore",
+//       html: testBody,
+//     };
+
+//     const results = [];
+//     // await Promise.all(mails.map((email) => sendEmail({ ...data, to: email }))); methos 1
+
+//     for (const email of mails) {
+//       try {
+//         await sendEmail({ ...data, to: email });
+//         results.push({ email: email, message: "success" });
+//       } catch (error) {
+//         results.push({ email: email, message: "failed" });
+//         console.error("Error sending email:", error);
+//       }
+//     }
+//     res.status(207).json({
+//       message: "Bulk email process completed",
+//       results,
+//     });
+
+//     // res.status(200).json({ message: "Email sent successfully" });
+//   } catch (error) {
+//     console.error("Error sending email:", error);
+//     res.status(500).json({ error: "Failed to send email" });
+//   }
+// });
+
 router.post("/sendEmail", async (req, res) => {
-  const { email } = req.body;
   const mails = [
-    "sheikh1@mailinator.com",
-    "atif1@mailinator.com",
-    "ismailawan@gmail.com",
+    "faisal@mailinator.com",
+    "basit@gmail.com",
+    "rimsha@gmail.com",
   ];
+
+  const testBody = `Hi. This link is valid for 10 minutes.
+  <a href='https://koyal.pk'>Click Here</a>`;
+
   try {
-    //const data = req.body;
-    const testBody = `Hi. This Link is valid till 10 minutes
-    from now. <a href='https://koyal.pk'>Click Here</a>`;
-    const data = {
-      // to: email,
-      text: "This is a test email",
-      subject: "please ignore",
-      html: testBody,
-    };
-    await Promise.all(mails.map((email) => sendEmail({ ...data, to: email })));
-    res.status(200).json({ message: "Email sent successfully" });
+    for (const email of mails) {
+      await emailQueue.add("sendEmail", {
+        to: email,
+        subject: "please ignore",
+        text: "This is a test email",
+        html: testBody,
+      });
+    }
+    res.status(201).json({ message: "Emails queued successfully" });
   } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ error: "Failed to send email" });
+    console.error("Queuing failed", error);
+    res.status(500).json({ error: "Failed to queue emails" });
   }
 });
 
