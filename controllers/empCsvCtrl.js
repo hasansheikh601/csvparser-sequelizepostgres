@@ -6,7 +6,7 @@ import csv, { parse } from "fast-csv"; // Import fast-csv for CSV parsing
 import Employee from "../models/employee.js";
 import upload from "../middleware/upload.js";
 import sendEmail from "../utils/sendEmail.js";
-import { emailQueue } from "../bullmq/queue.js";
+// import { emailQueue } from "../bullmq/queue.js";
 const router = express.Router();
 
 router.get("/getcsv", async (req, res) => {
