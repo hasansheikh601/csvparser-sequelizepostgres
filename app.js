@@ -4,6 +4,7 @@ import express from "express";
 import sequelize from "./config/database.js"; // Import sequelize instance
 // import routes from './routes/index.js';
 import empCsvCtrl from "./controllers/empCsvCtrl.js";
+import csvDataCtrl from "./controllers/csvDataCtrl.js";
 
 const app = express();
 const PORT = process.env.PORT || 7979;
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes(app);
 app.use("/api/csv", empCsvCtrl);
+app.use("/api/csv-data", csvDataCtrl);
 
 const startServer = async () => {
   try {
